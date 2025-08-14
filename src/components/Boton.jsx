@@ -1,4 +1,10 @@
-function Boton({ tipo, compararNum, reiniciarJuego, setMensaje }) {
+function Boton({
+  tipo,
+  compararNum,
+  reiniciarJuego,
+  setMensaje,
+  guardarVictoria,
+}) {
   return (
     <div>
       {tipo == "reiniciar" ? (
@@ -6,6 +12,7 @@ function Boton({ tipo, compararNum, reiniciarJuego, setMensaje }) {
           onClick={() => {
             reiniciarJuego();
             setMensaje("Reiniciaste el juego!");
+            guardarVictoria("maquina");
           }}
           type="button"
           className="py-3 px-4 inline-flex items-center gap-x-2 text-lg font-medium rounded-lg border border-transparent bg-gray-500 text-white hover:bg-gray-600 focus:outline-hidden focus:bg-gray-600 disabled:opacity-50 disabled:pointer-events-none"

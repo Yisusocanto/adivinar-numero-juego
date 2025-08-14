@@ -6,18 +6,35 @@ import Mensaje from "./components/Mensaje";
 import Intentos from "./components/Intentos";
 import TituloApp from "./components/TituloApp";
 import ModalFelicitacion from "./components/ModalFelicitacion";
+import HistorialVictorias from "./components/HistorialVictorias";
 
 function App() {
   const [numRandom, setNumRandom] = useState(0);
   const [numUsuario, setNumUsuario] = useState(0);
   const [intentos, setIntentos] = useState(10);
-  const [mensaje, setMensaje] = useState("Vamos adivina el número!");
+  const [mensaje, setMensaje] = useState("Adivina el numero, es del 1 al 100 y solo 10 intentos!!!");
   const [openModal, setOpenModal] = useState(false);
+  const [historial, sethistorial] = useState({});
 
   function crearNumRandom() {
     const random = Math.floor(Math.random() * 101);
     setNumRandom(random);
   }
+
+  const extraerhistorial = () => {
+    let historialExtraido = JSON.parse(
+      localStorage.getItem("historial-victorias")
+    );
+    if (!historialExtraido) historialExtraido = { maquina: 0, usuario: 0 };
+    sethistorial(historialExtraido);
+  };
+
+  const guardarVictoria = (ganador) => {
+    let nuevohistorial = { ...historial };
+    nuevohistorial[ganador] += 1;
+    sethistorial(nuevohistorial);
+    localStorage.setItem("historial-victorias", JSON.stringify(nuevohistorial));
+  };
 
   const reiniciarJuego = () => {
     crearNumRandom();
@@ -32,13 +49,15 @@ function App() {
     if (numUsuario === numRandom) {
       setOpenModal(true);
       reiniciarJuego();
-      setMensaje("");
+      setMensaje("Adivina el numero, es del 1 al 100 y solo 10 intentos!!!");
+      guardarVictoria("usuario");
     } else {
       const nuevosIntentos = intentos - 1;
       setIntentos(nuevosIntentos);
       if (nuevosIntentos === 0) {
         reiniciarJuego();
         setMensaje("Se acabaron los intentos, se reinició el juego!");
+        guardarVictoria("maquina");
       } else if (numUsuario < numRandom) {
         setMensaje("Más arriba!");
       } else {
@@ -47,7 +66,10 @@ function App() {
     }
   };
 
-  useEffect(() => crearNumRandom(), []);
+  useEffect(() => {
+    crearNumRandom();
+    extraerhistorial();
+  }, []);
 
   return (
     <>
@@ -66,8 +88,10 @@ function App() {
             compararNum={compararNum}
             reiniciarJuego={reiniciarJuego}
             setMensaje={setMensaje}
+            guardarVictoria={guardarVictoria}
           />
         </div>
+        <HistorialVictorias historial={historial} />
         <ModalFelicitacion openModal={openModal} setOpenModal={setOpenModal} />
       </div>
     </>
