@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 body {
   background: linear-gradient(90deg, #ff5527, #fe5875, #f364ab, #e074d5, #c586f4, #a799ff, #85aaff, #64baff);

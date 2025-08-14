@@ -5,12 +5,14 @@ import InputNumero from "./components/InputNumero";
 import Mensaje from "./components/Mensaje";
 import Intentos from "./components/Intentos";
 import TituloApp from "./components/TituloApp";
+import ModalFelicitacion from "./components/ModalFelicitacion";
 
 function App() {
   const [numRandom, setNumRandom] = useState(0);
   const [numUsuario, setNumUsuario] = useState(0);
   const [intentos, setIntentos] = useState(10);
   const [mensaje, setMensaje] = useState("Vamos adivina el número!");
+  const [openModal, setOpenModal] = useState(false);
 
   function crearNumRandom() {
     const random = Math.floor(Math.random() * 101);
@@ -19,7 +21,6 @@ function App() {
 
   const reiniciarJuego = () => {
     crearNumRandom();
-    setMensaje("Se acabaron los intentos, se generó un nuevo número!");
     setIntentos(10);
   };
 
@@ -29,12 +30,15 @@ function App() {
    */
   const compararNum = () => {
     if (numUsuario === numRandom) {
-      setMensaje("Adivinaste el número!!!");
+      setOpenModal(true);
+      reiniciarJuego();
+      setMensaje("");
     } else {
       const nuevosIntentos = intentos - 1;
       setIntentos(nuevosIntentos);
       if (nuevosIntentos === 0) {
         reiniciarJuego();
+        setMensaje("Se acabaron los intentos, se reinició el juego!");
       } else if (numUsuario < numRandom) {
         setMensaje("Más arriba!");
       } else {
@@ -56,9 +60,15 @@ function App() {
 
         <Intentos intentos={intentos} />
         <div className="flex mx-auto mt-6 justify-center  gap-5">
-          <Boton compararNum={compararNum} reiniciarJuego={reiniciarJuego}/>
-          <Boton tipo="reiniciar" compararNum={compararNum} reiniciarJuego={reiniciarJuego} />
+          <Boton compararNum={compararNum} reiniciarJuego={reiniciarJuego} />
+          <Boton
+            tipo="reiniciar"
+            compararNum={compararNum}
+            reiniciarJuego={reiniciarJuego}
+            setMensaje={setMensaje}
+          />
         </div>
+        <ModalFelicitacion openModal={openModal} setOpenModal={setOpenModal} />
       </div>
     </>
   );
